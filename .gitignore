@@ -1,0 +1,33 @@
+# Node dependencies
+node_modules/
+.npm/
+
+# Angular build artifacts
+dist/
+.angular/
+
+# Android SDK and Gradle build outputs
+android-sdk/
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/build/
+android/local.properties
+.gradle/
+build/
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.env
+venv/
+.venv/
+
+# Temporary & system files
+*.log
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

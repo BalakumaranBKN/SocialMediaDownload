@@ -1,0 +1,42 @@
+{
+  "name": "all-social-downloader",
+  "version": "1.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build --configuration production",
+    "cap:sync": "cap sync android",
+    "cap:open": "cap open android"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^19.1.5",
+    "@angular/cdk": "^19.1.4",
+    "@angular/common": "^19.1.5",
+    "@angular/compiler": "^19.1.5",
+    "@angular/core": "^19.1.5",
+    "@angular/forms": "^19.1.5",
+    "@angular/material": "^19.1.4",
+    "@angular/platform-browser": "^19.1.5",
+    "@angular/platform-browser-dynamic": "^19.1.5",
+    "@angular/router": "^19.1.5",
+    "@capacitor/android": "^7.0.1",
+    "@capacitor/core": "^7.0.1",
+    "@capacitor/dialog": "^7.0.0",
+    "@capacitor/filesystem": "^7.0.0",
+    "@capacitor/preferences": "^7.0.0",
+    "@capacitor/share": "^7.0.0",
+    "@capacitor/toast": "^7.0.0",
+    "rxjs": "~7.8.1",
+    "tslib": "^2.6.2",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^19.1.5",
+    "@angular/cli": "^19.1.5",
+    "@angular/compiler-cli": "^19.1.5",
+    "@capacitor/cli": "^7.0.1",
+    "typescript": "~5.7.2"
+  }
+}
+
