@@ -97,13 +97,22 @@ import { Toast } from '@capacitor/toast';
           <input 
             type="text" 
             [(ngModel)]="backendInput" 
-            placeholder="http://localhost:8000" 
+            placeholder="http://192.168.1.8:8000 or Render URL" 
             class="url-input" />
           <button class="btn-primary small" (click)="updateBackendUrl()">Save</button>
         </div>
+        <div class="backend-presets">
+          <button class="preset-chip" (click)="setPresetUrl('http://192.168.1.8:8000')">
+            <mat-icon>wifi</mat-icon> PC Wi-Fi (192.168.1.8)
+          </button>
+          <button class="preset-chip" (click)="setPresetUrl('http://localhost:8000')">
+            <mat-icon>laptop</mat-icon> PC Localhost
+          </button>
+        </div>
         <div class="backend-status">
           <span class="status-indicator" [class.healthy]="mediaService.backendHealthy()"></span>
-          <span>{{ mediaService.backendHealthy() ? 'Backend connected & online' : 'Local / Offline Mode' }}</span>
+          <span>{{ mediaService.backendHealthy() ? 'Backend connected & online' : 'Backend unreachable / Offline Mode' }}</span>
+          <button class="btn-text small check-btn" (click)="testConnection()">Test</button>
         </div>
       </div>
 
@@ -270,6 +279,36 @@ import { Toast } from '@capacitor/toast';
         }
       }
 
+      .backend-presets {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+
+        .preset-chip {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          background: var(--surface-alt);
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius-sm);
+          padding: 6px 10px;
+          font-size: 0.72rem;
+          color: var(--text-muted);
+          cursor: pointer;
+
+          mat-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+
+          &:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+          }
+        }
+      }
+
       .backend-status {
         display: flex;
         align-items: center;
@@ -339,6 +378,20 @@ export class SettingsComponent implements OnInit {
   async setVideoMode(mode: string) {
     this.defaultVideoMode = mode;
     await Preferences.set({ key: 'asd_video_mode', value: mode });
+  }
+
+  async setPresetUrl(url: string) {
+    this.backendInput = url;
+    await this.updateBackendUrl();
+  }
+
+  testConnection() {
+    this.mediaService.checkHealth().subscribe(healthy => {
+      this.mediaService.backendHealthy.set(healthy);
+      Toast.show({
+        text: healthy ? 'Connected to backend successfully!' : 'Cannot reach backend. Check IP / Wi-Fi!'
+      }).catch(() => {});
+    });
   }
 
   async updateBackendUrl() {

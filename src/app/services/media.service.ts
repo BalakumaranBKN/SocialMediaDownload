@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 import { MediaInspectResponse, PlatformType } from '../models/media.model';
 import { Preferences } from '@capacitor/preferences';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MediaService {
-  // Default to localhost, configurable in app settings
-  private backendUrl = 'http://localhost:8000';
+  // Default to LAN IP on native phone or localhost on PC
+  private backendUrl = Capacitor.isNativePlatform() ? 'http://192.168.1.8:8000' : 'http://localhost:8000';
   backendHealthy = signal<boolean>(false);
 
   constructor(private http: HttpClient) {
@@ -21,6 +22,8 @@ export class MediaService {
       const { value } = await Preferences.get({ key: 'asd_backend_url' });
       if (value) {
         this.backendUrl = value;
+      } else if (Capacitor.isNativePlatform()) {
+        this.backendUrl = 'http://192.168.1.8:8000';
       }
       this.checkHealth().subscribe(healthy => this.backendHealthy.set(healthy));
     } catch {
@@ -62,7 +65,10 @@ export class MediaService {
   inspectMedia(url: string): Observable<MediaInspectResponse> {
     return this.http.post<MediaInspectResponse>(`${this.backendUrl}/api/media/inspect`, { url }).pipe(
       catchError(err => {
-        const errorMsg = err?.error?.detail || err?.message || 'Media retrieval error. Check URL or network.';
+        let errorMsg = err?.error?.detail || err?.message || 'Media retrieval error. Check URL or network.';
+        if (err?.status === 0) {
+          errorMsg = `Cannot connect to Backend (${this.backendUrl}). On phone, 'localhost' points to the phone itself. Please open Settings (⚙) and set your PC Wi-Fi IP (http://192.168.1.8:8000) or your Render live URL.`;
+        }
         // Fallback local detection
         const detected = this.detectPlatformLocally(url);
         return of({
